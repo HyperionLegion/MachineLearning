@@ -70,6 +70,7 @@ def one_step():
                     sum += (grid[j-1][i]+0.9*oldv[j-1][i])*policies[(j,i)][3]
                 v[j][i] =  sum
 
+learning_rate = 0.7
 def update_policy():
     for i in range(w):
         for j in range(h):
@@ -77,43 +78,78 @@ def update_policy():
                 sums = 0
                 probs = []
                 if i+1 < w and (j, i+1) not in BARRIERS: #right
-                    sums += v[j][i+1]
-                    probs.append(policies[(j,i)][0])
+                    probs.append(v[j][i+1])
                 if i-1 >= 0 and (j, i-1) not in BARRIERS: #left
-                    sums += v[j][i-1]
-                    probs.append(policies[(j,i)][1])
+                    probs.append(v[j][i-1])
                 if j+1 < h and (j+1, i) not in BARRIERS: #down
-                    sums += v[j+1][i]
-                    probs.append(policies[(j,i)][2])
+                    probs.append(v[j+1][i])
                 if j-1 >= 0 and (j-1, i) not in BARRIERS: #up
-                    sums += v[j-1][i]
-                    probs.append(policies[(j,i)][0])
+                    probs.append(v[j-1][i])
                 count = len(probs)
-                if sums!=0:
-                    min_prob = min(probs)
-                    if min_prob<0:
-                        min_prob = min_prob * -1
-                    if i+1 < w and (j, i+1) not in BARRIERS: #right
-                        policies[(j,i)][0] = (min_prob+policies[j,i][0])/(sums+min_prob*count)
+                max_prob = max(probs)
+                if i+1 < w and (j, i+1) not in BARRIERS: #right
+                    if v[j][i+1]==max_prob:
+                        policies[(j,i)][0] = 0.7
                     else:
-                        policies[(j,i)][0] = 0.0
-                    if i-1 >= 0 and (j, i-1) not in BARRIERS: #left
-                        policies[(j,i)][1] = (min_prob+policies[j,i][1])/(sums+min_prob*count)
+                        policies[(j,i)][0] = 0.3/(count-1)
+                if i-1 >= 0 and (j, i-1) not in BARRIERS: #left
+                    if v[j][i-1]==max_prob:
+                        policies[(j,i)][1] = 0.7
                     else:
-                        policies[(j,i)][1] = 0.0
-                    if j+1 < h and (j+1, i) not in BARRIERS: #down
-                        policies[(j,i)][2] = (min_prob+policies[j,i][2])/(sums+min_prob*count)
+                        policies[(j,i)][1] = 0.3/(count-1)
+                if j+1 < h and (j+1, i) not in BARRIERS: #down
+                    if v[j+1][i]==max_prob:
+                        policies[(j,i)][2] = 0.7
                     else:
-                        policies[(j,i)][2] = 0.0
-                    if j-1 >= 0 and (j-1, i) not in BARRIERS: #up
-                        policies[(j,i)][3] = (min_prob+policies[j,i][3])/(sums+min_prob*count)
+                        policies[(j,i)][2] = 0.3/(count-1)
+                if j-1 >= 0 and (j-1, i) not in BARRIERS: #up
+                    if v[j-1][i]==max_prob:
+                        policies[(j,i)][3] = 0.7
                     else:
-                        policies[(j,i)][3] = 0.0   
-                    #update policy
+                        policies[(j,i)][3] = 0.3/(count-1)
+                # min_prob = min(probs)
+                # if min_prob < 0:
+                #     for x in probs:
+                #         sums += (x-min_prob)
+                # else:
+                #     for x in probs:
+                #         sums += x
+                # if sums!=0:
+                #     pos_min_prob = min(probs)
+                #     if min_prob<0:
+                #         pos_min_prob = min_prob * -1
+                #         sums+=1
+                #     else:
+                #         pos_min_prob = 0
+                #     if i+1 < w and (j, i+1) not in BARRIERS: #right
+                #         policies[(j,i)][0] = (pos_min_prob+policies[j,i][0])/(sums)
+                #         if v[j][i+1] == min_prob:
+                #             policies[(j,i)][0] = (pos_min_prob+1+policies[j,i][0])/(sums+1)
+                #     else:
+                #         policies[(j,i)][0] = 0.0
+                #     if i-1 >= 0 and (j, i-1) not in BARRIERS: #left
+                #         policies[(j,i)][1] = (pos_min_prob+policies[j,i][1])/(sums+1)
+                #         if v[j][i-1] == min_prob:
+                #             policies[(j,i)][1] = (pos_min_prob+1+policies[j,i][1])/(sums+1)
+                #     else:
+                #         policies[(j,i)][1] = 0.0
+                #     if j+1 < h and (j+1, i) not in BARRIERS: #down
+                #         policies[(j,i)][2] = (pos_min_prob+policies[j,i][2])/(sums+1)
+                #         if v[j+1][i] == min_prob:
+                #             policies[(j,i)][2] = (pos_min_prob+1+policies[j,i][2])/(sums+1)
+                #     else:
+                #         policies[(j,i)][2] = 0.0
+                #     if j-1 >= 0 and (j-1, i) not in BARRIERS: #up
+                #         policies[(j,i)][3] = (pos_min_prob+policies[j,i][3])/(sums+1)
+                #         if v[j-1][i] == min_prob:
+                #             policies[(j,i)][3] = (pos_min_prob+1+policies[j,i][3])/(sums+1)
+                #     else:
+                #         policies[(j,i)][3] = 0.0   
+                #     #update policy
 
 for i in range(50):
     one_step()
-    #update_policy()
+    update_policy()
 print("updated v")
 for x in range(h):
     for y in range(w):
