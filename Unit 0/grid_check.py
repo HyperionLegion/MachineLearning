@@ -48,9 +48,11 @@ for i in LOSE_STATE:
 
 for x in range(h):
     for y in range(w):
-        print(v[x][y], end=" ")
+        print(grid[x][y], end=" ")
     print()
 
+
+gamma = 0.9
 def one_step():
     oldv = [[0.0 for x in range(w)] for y in range(h)]
     for j in range(h):
@@ -61,13 +63,13 @@ def one_step():
             if (j,i) not in BARRIERS:
                 sum = 0
                 if i+1 < w and (j, i+1) not in BARRIERS: #right
-                    sum += (grid[j][i+1]+0.9*oldv[j][i+1])*policies[(j,i)][0]
+                    sum += (grid[j][i+1]+gamma*oldv[j][i+1])*policies[(j,i)][0]
                 if i-1 >= 0 and (j, i-1) not in BARRIERS: #left
-                    sum += (grid[j][i-1]+0.9*oldv[j][i-1])*policies[(j,i)][1]
+                    sum += (grid[j][i-1]+gamma*oldv[j][i-1])*policies[(j,i)][1]
                 if j+1 < h and (j+1, i) not in BARRIERS: #down
-                    sum += (grid[j+1][i]+0.9*oldv[j+1][i])*policies[(j,i)][2]
+                    sum += (grid[j+1][i]+gamma*oldv[j+1][i])*policies[(j,i)][2]
                 if j-1 >= 0 and (j-1, i) not in BARRIERS: #up
-                    sum += (grid[j-1][i]+0.9*oldv[j-1][i])*policies[(j,i)][3]
+                    sum += (grid[j-1][i]+gamma*oldv[j-1][i])*policies[(j,i)][3]
                 v[j][i] =  sum
 
 learning_rate = 0.7
@@ -89,24 +91,24 @@ def update_policy():
                 max_prob = max(probs)
                 if i+1 < w and (j, i+1) not in BARRIERS: #right
                     if v[j][i+1]==max_prob:
-                        policies[(j,i)][0] = 0.7
+                        policies[(j,i)][0] = learning_rate
                     else:
-                        policies[(j,i)][0] = 0.3/(count-1)
+                        policies[(j,i)][0] = (1-learning_rate)/(count-1)
                 if i-1 >= 0 and (j, i-1) not in BARRIERS: #left
                     if v[j][i-1]==max_prob:
-                        policies[(j,i)][1] = 0.7
+                        policies[(j,i)][1] = learning_rate
                     else:
-                        policies[(j,i)][1] = 0.3/(count-1)
+                        policies[(j,i)][1] = (1-learning_rate)/(count-1)
                 if j+1 < h and (j+1, i) not in BARRIERS: #down
                     if v[j+1][i]==max_prob:
-                        policies[(j,i)][2] = 0.7
+                        policies[(j,i)][2] = learning_rate
                     else:
-                        policies[(j,i)][2] = 0.3/(count-1)
+                        policies[(j,i)][2] = (1-learning_rate)/(count-1)
                 if j-1 >= 0 and (j-1, i) not in BARRIERS: #up
                     if v[j-1][i]==max_prob:
-                        policies[(j,i)][3] = 0.7
+                        policies[(j,i)][3] = learning_rate
                     else:
-                        policies[(j,i)][3] = 0.3/(count-1)
+                        policies[(j,i)][3] = (1-learning_rate)/(count-1)
                 # min_prob = min(probs)
                 # if min_prob < 0:
                 #     for x in probs:
