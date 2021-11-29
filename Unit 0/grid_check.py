@@ -1,18 +1,42 @@
+
+#example: ["", 6, 5, 3, 2, 2, 3, 2, 3, 3, 2, 2, 3, 1, 4, 3, -1] w: 6, h:5, m:3, borders: 2, 2 and 3, 2 and 3, 3, rewards: 2, 3, 1, ad 4, 3, -1
 import sys
 w = int(sys.argv[1])
 h = int(sys.argv[2])
+m = int(sys.argv[3]) #exL 3/
+n = int(sys.argv[4+2*m])
+
+BARRIERS = []
+WIN_STATE = []
+LOSE_STATE = []
+
+for i in range(m):
+    x = int(sys.argv[4+i*2+1])
+    y = int(sys.argv[4+i*2])
+    BARRIERS.append((y,x))
+    print(y,x)
+for i in range(n):
+    x = int(sys.argv[4+2*m + i*3+2])
+    y = int(sys.argv[4+2*m + i*3+1])
+    reward = int(sys.argv[4+2*m + i*3+3])
+    if reward==1:
+        WIN_STATE.append((y, x, reward))
+    else:
+        LOSE_STATE.append((y, x, reward))
 
 grid = [[0.0 for x in range(w)] for y in range(h)]
+
 v = [[0.0 for x in range(w)] for y in range(h)]
 policies = {}
 #[right, left, down, up]
 
+# python grid_check.py w h m(num of barriers) _barriers: barrier1x barrier1y barrier2x barrie2y ... m(num of rewards) rewards: reward1x reward1y reward1value reward2x reward2y reward2value
+
 #(y, x) and [y, x] format where y is height and x is width
 #grid y increases as it goes down and grid x increases as it goes left
 
-WIN_STATE = [(1, 3)]
-LOSE_STATE = [(2, 3)]
-BARRIERS = [(2,1)]
+# WIN_STATE = [(1, 3)]
+# LOSE_STATE = [(2, 3)]
 
 #initialize policy
 for i in range(w):
@@ -45,12 +69,12 @@ for i in WIN_STATE:
     grid[i[0]][i[1]] = 1.0
 for i in LOSE_STATE:
     grid[i[0]][i[1]] = -1.0
-
+#for i in BARRIERS:
+#    grid[i[0]][i[1]] = -5
 for x in range(h):
     for y in range(w):
-        print(grid[x][y], end=" ")
+        print(round(grid[x][y],2), end=" ")
     print()
-
 
 gamma = 0.9
 def one_step():
@@ -150,7 +174,8 @@ def update_policy():
                 #     #update policy
 
 for i in range(50):
-    one_step()
+    for j in range(50):
+        one_step()
     update_policy()
 print("updated v")
 for x in range(h):
