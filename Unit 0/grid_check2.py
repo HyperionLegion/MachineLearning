@@ -42,27 +42,11 @@ for i in range(w):
     for j in range(h):
         if (j,i) not in BARRIERS:
             policies[(j,i)] = [0.0, 0.0, 0.0, 0.0]
-            count = 0
-            if i+1 < w and (j, i+1) not in BARRIERS: #right
-                policies[(j,i)][0] = 1.0
-                count+=1
-            if i-1 >= 0 and (j, i-1) not in BARRIERS: #left
-                policies[(j,i)][1] = 1.0
-                count+=1
-            if j+1 < h and (j+1, i) not in BARRIERS: #down
-                policies[(j,i)][2] = 1.0
-                count+=1
-            if j-1 >= 0 and (j-1, i) not in BARRIERS: #up
-                policies[(j,i)][3] = 1.0
-                count+=1
-            if i+1 < w and (j, i+1) not in BARRIERS: #right
-                policies[(j,i)][0] = 1.0/count
-            if i-1 >= 0 and (j, i-1) not in BARRIERS: #left
-                policies[(j,i)][1] = 1.0/count
-            if j+1 < h and (j+1, i) not in BARRIERS: #down
-                policies[(j,i)][2] = 1.0/count
-            if j-1 >= 0 and (j-1, i) not in BARRIERS: #up
-                policies[(j,i)][3] = 1.0/count
+            policies[(j,i)][0] = 0.25
+            policies[(j,i)][1] = 0.25
+            policies[(j,i)][2] = 0.25
+            policies[(j,i)][3] = 0.25
+
 
 for i in WIN_STATE:
     grid[i[0]][i[1]] = 1.0
@@ -114,7 +98,7 @@ def update_policy():
                     probs.append(v[j+1][i])
                 if j-1 >= 0 and (j-1, i) not in BARRIERS: #up
                     probs.append(v[j-1][i])
-                count = len(probs)
+                count = 4
                 max_prob = max(probs)
                 if i+1 < w and (j, i+1) not in BARRIERS: #right
                     if v[j][i+1]==max_prob:
@@ -176,10 +160,10 @@ def update_policy():
                 #         policies[(j,i)][3] = 0.0   
                 #     #update policy
 
-for i in range(25):
-    for j in range(50):
+for i in range(2):
+    #for j in range(50):
         one_step()
-    update_policy()
+    #update_policy()
 print("updated v")
 for x in range(h):
     for y in range(w):
