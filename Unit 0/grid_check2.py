@@ -54,14 +54,14 @@ for i in LOSE_STATE:
     grid[i[0]][i[1]] = -1.0
 #for i in BARRIERS:
 #    grid[i[0]][i[1]] = -5
-for x in range(h):
-    for y in range(w):
-        if (x, y) not in BARRIERS:
-            print(round(grid[x][y],2), end=" ")
-        else:
-            print("---", end = " ")
+# for x in range(h):
+#     for y in range(w):
+#         if (x, y) not in BARRIERS:
+#             print(round(grid[x][y],2), end=" ")
+#         else:
+#             print("---", end = " ")
         
-    print()
+#     print()
 
 gamma = 0.9
 def one_step():
@@ -160,11 +160,11 @@ def update_policy():
                 #         policies[(j,i)][3] = 0.0   
                 #     #update policy
 
-for i in range(2):
+for i in range(1):
     #for j in range(50):
         one_step()
     #update_policy()
-print("updated v")
+# print("updated v")
 for x in range(h):
     for y in range(w):
         print("{:.2f}".format(v[x][y]), end=" ")
