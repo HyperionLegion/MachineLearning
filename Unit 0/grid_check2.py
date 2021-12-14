@@ -160,12 +160,69 @@ def update_policy():
                 #         policies[(j,i)][3] = 0.0   
                 #     #update policy
 
-for i in range(1):
-    #for j in range(50):
+for i in range(100):
+    for j in range(500):
         one_step()
-    #update_policy()
+    update_policy()
 # print("updated v")
-for x in range(h):
-    for y in range(w):
-        print("{:.2f}".format(v[x][y]), end=" ")
+# for x in range(h):
+#     for y in range(w):
+#         print("{:.2f}".format(v[x][y]), end=" ")
+#         #print(v[x][y], end=" ")
+#     print()
+
+for j in range(h):
+    for i in range(w):
+        #print("{:.2f}".format(v[x][y]), end=" ")
+        values = []
+        if i+1 < w and (j, i+1) not in BARRIERS: #right
+            values.append(v[j][i+1])
+        else:
+            values.append(float('-inf'))
+        if i-1 >= 0 and (j, i-1) not in BARRIERS: #left
+            values.append(v[j][i-1])
+        else:
+            values.append(float('-inf'))
+        if j+1 < h and (j+1, i) not in BARRIERS: #down
+            values.append(v[j+1][i])
+        else:
+            values.append(float('-inf'))
+        if j-1 >= 0 and (j-1, i) not in BARRIERS: #up
+            values.append(v[j-1][i])
+        else:
+            values.append(float('-inf'))
+
+        if (j, i) in BARRIERS:
+            print("####", end=" ")
+        elif (j,i+1,1) in WIN_STATE:
+            print("---r", end=" ")
+        elif (j,i-1,1) in WIN_STATE:
+            print("--l-", end=" ")
+        elif (j+1,i,1) in WIN_STATE:
+            print("-d--", end=" ")
+        elif (j-1,i,1) in WIN_STATE:
+            print("u---", end=" ")
+        else:
+            threshold = 0.045
+
+            string = "----"
+
+            maximum = max(values)
+            index = values.index(maximum)
+            letters = {0: "r", 1: "l", 2: "d", 3: "u"}
+            string = string[:index] + letters[index] + string[index+1:]
+            for z in range(len(values)):
+                if index !=z and maximum-values[z]<=threshold:
+                    string = string[:z] + letters[z] + string[z+1:]
+            if (j,i+1,-1) in LOSE_STATE:
+                string = string[:0] + "-" + string[0+1:]
+            elif (j,i-1,-1) in LOSE_STATE:
+                string = string[:1] + "-" + string[1+1:]
+            elif (j+1,i,-1) in LOSE_STATE:
+                string = string[:2] + "-" + string[2+1:]
+            elif (j-1,i,-1) in LOSE_STATE:
+                string = string[:3] + "-" + string[3+1:]
+            print(string[::-1], end=" ")
     print()
+
+## for barriers, udlr for policy and - in place of letters if that is not a good move
