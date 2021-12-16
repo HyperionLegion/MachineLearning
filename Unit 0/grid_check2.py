@@ -91,77 +91,71 @@ def update_policy():
                 sums = 0
                 probs = []
                 if i+1 < w and (j, i+1) not in BARRIERS: #right
-                    probs.append(v[j][i+1])
+                    if (j, i+1, -1) in LOSE_STATE:
+                        probs.append(float('-inf'))
+                    else:
+                        probs.append(v[j][i+1])
+                else:
+                    probs.append(float('-inf'))
                 if i-1 >= 0 and (j, i-1) not in BARRIERS: #left
-                    probs.append(v[j][i-1])
+                    if (j, i-1, -1) in LOSE_STATE:
+                        probs.append(float('-inf'))
+                    else:
+                        probs.append(v[j][i-1])
+                else:
+                    probs.append(float('-inf'))
                 if j+1 < h and (j+1, i) not in BARRIERS: #down
-                    probs.append(v[j+1][i])
+                    if (j+1, i, -1) in LOSE_STATE:
+                        probs.append(float('-inf'))
+                    else:
+                        probs.append(v[j+1][i])
+                else:
+                    probs.append(float('-inf'))
                 if j-1 >= 0 and (j-1, i) not in BARRIERS: #up
-                    probs.append(v[j-1][i])
+                    if (j-1, i, -1) in LOSE_STATE:
+                        probs.append(float('-inf'))
+                    else:
+                        probs.append(v[j-1][i])
+                else:
+                    probs.append(float('-inf'))
                 count = 4
                 max_prob = max(probs)
-                if i+1 < w and (j, i+1) not in BARRIERS: #right
-                    if v[j][i+1]==max_prob:
-                        policies[(j,i)][0] = learning_rate
+                num = 1
+                index = probs.index(max_prob)
+                for z in range(0, len(probs)):
+                    if index !=z and max_prob - probs[z] <= 0.001:
+                        num +=1
+                for z in range (0,len(probs)):
+                    if index==z:
+                        policies[(j,i)][z] = 1/num
+                    elif max_prob  - probs[z] <= 0.001:
+                        policies[(j,i)][z] = 1/num
                     else:
-                        policies[(j,i)][0] = (1-learning_rate)/(count-1)
-                if i-1 >= 0 and (j, i-1) not in BARRIERS: #left
-                    if v[j][i-1]==max_prob:
-                        policies[(j,i)][1] = learning_rate
-                    else:
-                        policies[(j,i)][1] = (1-learning_rate)/(count-1)
-                if j+1 < h and (j+1, i) not in BARRIERS: #down
-                    if v[j+1][i]==max_prob:
-                        policies[(j,i)][2] = learning_rate
-                    else:
-                        policies[(j,i)][2] = (1-learning_rate)/(count-1)
-                if j-1 >= 0 and (j-1, i) not in BARRIERS: #up
-                    if v[j-1][i]==max_prob:
-                        policies[(j,i)][3] = learning_rate
-                    else:
-                        policies[(j,i)][3] = (1-learning_rate)/(count-1)
-                # min_prob = min(probs)
-                # if min_prob < 0:
-                #     for x in probs:
-                #         sums += (x-min_prob)
-                # else:
-                #     for x in probs:
-                #         sums += x
-                # if sums!=0:
-                #     pos_min_prob = min(probs)
-                #     if min_prob<0:
-                #         pos_min_prob = min_prob * -1
-                #         sums+=1
+                        policies[(j,i)][z] = 0
+                # if i+1 < w and (j, i+1) not in BARRIERS: #right
+                #     if v[j][i+1]==max_prob:
+                #         policies[(j,i)][0] = learning_rate
                 #     else:
-                #         pos_min_prob = 0
-                #     if i+1 < w and (j, i+1) not in BARRIERS: #right
-                #         policies[(j,i)][0] = (pos_min_prob+policies[j,i][0])/(sums)
-                #         if v[j][i+1] == min_prob:
-                #             policies[(j,i)][0] = (pos_min_prob+1+policies[j,i][0])/(sums+1)
+                #         policies[(j,i)][0] = (1-learning_rate)/(count-1)
+                # if i-1 >= 0 and (j, i-1) not in BARRIERS: #left
+                #     if v[j][i-1]==max_prob:
+                #         policies[(j,i)][1] = learning_rate
                 #     else:
-                #         policies[(j,i)][0] = 0.0
-                #     if i-1 >= 0 and (j, i-1) not in BARRIERS: #left
-                #         policies[(j,i)][1] = (pos_min_prob+policies[j,i][1])/(sums+1)
-                #         if v[j][i-1] == min_prob:
-                #             policies[(j,i)][1] = (pos_min_prob+1+policies[j,i][1])/(sums+1)
+                #         policies[(j,i)][1] = (1-learning_rate)/(count-1)
+                # if j+1 < h and (j+1, i) not in BARRIERS: #down
+                #     if v[j+1][i]==max_prob:
+                #         policies[(j,i)][2] = learning_rate
                 #     else:
-                #         policies[(j,i)][1] = 0.0
-                #     if j+1 < h and (j+1, i) not in BARRIERS: #down
-                #         policies[(j,i)][2] = (pos_min_prob+policies[j,i][2])/(sums+1)
-                #         if v[j+1][i] == min_prob:
-                #             policies[(j,i)][2] = (pos_min_prob+1+policies[j,i][2])/(sums+1)
+                #         policies[(j,i)][2] = (1-learning_rate)/(count-1)
+                # if j-1 >= 0 and (j-1, i) not in BARRIERS: #up
+                #     if v[j-1][i]==max_prob:
+                #         policies[(j,i)][3] = learning_rate
                 #     else:
-                #         policies[(j,i)][2] = 0.0
-                #     if j-1 >= 0 and (j-1, i) not in BARRIERS: #up
-                #         policies[(j,i)][3] = (pos_min_prob+policies[j,i][3])/(sums+1)
-                #         if v[j-1][i] == min_prob:
-                #             policies[(j,i)][3] = (pos_min_prob+1+policies[j,i][3])/(sums+1)
-                #     else:
-                #         policies[(j,i)][3] = 0.0   
-                #     #update policy
+                #         policies[(j,i)][3] = (1-learning_rate)/(count-1)
+                
 
-for i in range(100):
-    for j in range(500):
+for i in range(50):
+    for j in range(50):
         one_step()
     update_policy()
 # print("updated v")
@@ -203,7 +197,7 @@ for j in range(h):
         elif (j-1,i,1) in WIN_STATE:
             print("u---", end=" ")
         else:
-            threshold = 0.045
+            threshold = 0.001
 
             string = "----"
 
@@ -214,14 +208,29 @@ for j in range(h):
             for z in range(len(values)):
                 if index !=z and maximum-values[z]<=threshold:
                     string = string[:z] + letters[z] + string[z+1:]
+            secondmax = min(values)
+            secondindex = values.index(secondmax)
+            for a in range(len(values)):
+                if values[a] != maximum:
+                    if secondmax < values[a]:
+                        secondmax = values[a]
+                        secondindex = a
             if (j,i+1,-1) in LOSE_STATE:
                 string = string[:0] + "-" + string[0+1:]
-            elif (j,i-1,-1) in LOSE_STATE:
+                if index==0:
+                    string = string[:secondindex] + letters[secondindex] + string[secondindex+1:]
+            if (j,i-1,-1) in LOSE_STATE:
                 string = string[:1] + "-" + string[1+1:]
-            elif (j+1,i,-1) in LOSE_STATE:
+                if index==1:
+                    string = string[:secondindex] + letters[secondindex] + string[secondindex+1:]
+            if (j+1,i,-1) in LOSE_STATE:
                 string = string[:2] + "-" + string[2+1:]
-            elif (j-1,i,-1) in LOSE_STATE:
+                if index ==2:
+                    string = string[:secondindex] + letters[secondindex] + string[secondindex+1:]
+            if (j-1,i,-1) in LOSE_STATE:
                 string = string[:3] + "-" + string[3+1:]
+                if index == 3:
+                    string = string[:secondindex] + letters[secondindex] + string[secondindex+1:]
             print(string[::-1], end=" ")
     print()
 
