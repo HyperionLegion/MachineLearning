@@ -154,16 +154,16 @@ def update_policy():
                 #         policies[(j,i)][3] = (1-learning_rate)/(count-1)
                 
 
-for i in range(50):
-    for j in range(50):
+for i in range(1):
+    for j in range(4):
         one_step()
     update_policy()
-# print("updated v")
-# for x in range(h):
-#     for y in range(w):
-#         print("{:.2f}".format(v[x][y]), end=" ")
-#         #print(v[x][y], end=" ")
-#     print()
+print("updated v")
+for x in range(h):
+    for y in range(w):
+        print("{:.2f}".format(v[x][y]), end=" ")
+        #print(v[x][y], end=" ")
+    print()
 
 for j in range(h):
     for i in range(w):
