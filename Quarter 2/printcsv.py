@@ -2,7 +2,28 @@ import csv
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits import mplot3d
+import math
 #
+def lab03(tvData, salesData, x, n):
+    indexes = [k for k in range(0,n)]
+    maxIndex = 0
+    for i in indexes:
+        if (abs(tvData[i]-x) > abs(tvData[maxIndex] -x)):
+            maxIndex = i
+    for i in range (0, len(tvData)):
+        if i not in indexes:
+            if (abs(tvData[i]-x) < abs(tvData[maxIndex] -x)):
+                indexes.remove(maxIndex)
+                indexes.append(i)
+                maxIndex = indexes[0]
+                for j in indexes:
+                    if (abs(tvData[j]-x) > abs(tvData[maxIndex] -x)):
+                        maxIndex = j
+    averagey = 0
+    for i in indexes:
+        averagey += salesData[i]
+    averagey = averagey/len(indexes)
+    return averagey
 def SEb02(RSE, xn, tvData):
     denom = 0
     for i in tvData:
@@ -97,7 +118,10 @@ b0 = yn - b1*xn
 error = 0
 for i in range(0,len(tvData)):
     error += (salesData[i]-formula(tvData[i],b0,b1))**2
+print(b0-2*SEb02(error/(len(tvData)-2), xn, tvData)**0.5, b0+2*SEb02(error/(len(tvData)-2), xn, tvData)**0.5)
+print(b1-2*SEb12(error/(len(tvData)-2), xn, tvData)**0.5, b1+2*SEb12(error/(len(tvData)-2), xn, tvData)**0.5)
 print(error)
+print(lab03(tvData, salesData, 13.2, 1))
 x = np.array(range(int(min(tvData)), int(max(tvData))))
 #print(x)
 y = formula(x, b0, b1)
@@ -107,7 +131,7 @@ y = formula(x, b0, b1)
 b0 = np.arange(5.0,9.0,0.4/100)
 b1 = np.arange(0.03,.07,0.04/101)
 b0, b1 = np.meshgrid(b0, b1)
-print(b0)
+#print(b0)
 z = errorFunc(b0, b1, tvData, salesData)
 # b0residStanError, b1residStanError = residualStandardError(b0, b1, tvData, salesData, xn) #resid stand error
 # print(b0residStanError)
