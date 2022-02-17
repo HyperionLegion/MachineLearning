@@ -70,7 +70,7 @@ def errorFunc(b0, b1, tvData, salesData):
 
 tvData = []
 salesData = []
-with open( 'Advertising.csv' , newline='' ) as csvfile :
+with open( 'Datasaurus_data.csv' , newline='' ) as csvfile :
     #
     myreader = csv.reader( csvfile , delimiter=',' , quotechar='"' )
     #
@@ -87,9 +87,9 @@ with open( 'Advertising.csv' , newline='' ) as csvfile :
     #
     for row in myreader :
     #
-        tv = row[1]
+        tv = row[0]
     #
-        sales = row[4]
+        sales = row[1]
         tvData.append(float(tv))
         salesData.append(float(sales))
     #
@@ -120,14 +120,16 @@ for i in range(0,len(tvData)):
     error += (salesData[i]-formula(tvData[i],b0,b1))**2
 print(b0-2*SEb02(error/(len(tvData)-2), xn, tvData)**0.5, b0+2*SEb02(error/(len(tvData)-2), xn, tvData)**0.5)
 print(b1-2*SEb12(error/(len(tvData)-2), xn, tvData)**0.5, b1+2*SEb12(error/(len(tvData)-2), xn, tvData)**0.5)
+print(SEb02(error/(len(tvData)-2), xn, tvData))
+print(SEb12(error/(len(tvData)-2), xn, tvData))
 print(error)
 print(lab03(tvData, salesData, 13.2, 1))
 x = np.array(range(int(min(tvData)), int(max(tvData))))
 #print(x)
 y = formula(x, b0, b1)
-# plt.plot(x, y)
-# plt.scatter(tvData, salesData)
-# plt.show()
+#plt.plot(x, y)
+#plt.scatter(tvData, salesData)
+#plt.show()
 b0 = np.arange(5.0,9.0,0.4/100)
 b1 = np.arange(0.03,.07,0.04/101)
 b0, b1 = np.meshgrid(b0, b1)
@@ -137,11 +139,17 @@ z = errorFunc(b0, b1, tvData, salesData)
 # print(b0residStanError)
 fig = plt.figure()
 ax = plt.axes(projection='3d')
-#ax.plot_surface(b0, b1, z) #surface plot
+ax.plot_surface(b0, b1, z) #surface plot
 
+lab03x = np.arange(min(tvData), max(tvData), 1)
+lab03x = lab03x.tolist()
+lab03y = []
+for i in lab03x:
+    lab03y.append(lab03(tvData, salesData, i, 5))
+#    plt.scatter(i, lab03(tvData, salesData, i, 5), color='#ff0000') #make this 2d
 #ax.view_init(60, 35) #view angle
 ax.scatter( 7.0325935491277 , 0.04753664, 2102.53 , color = '#ff0000' )
-plt.contour( b0 , b1 , z )
+#plt.contour( b0 , b1 , z )
 plt.show()
 print( 'done' )
 
