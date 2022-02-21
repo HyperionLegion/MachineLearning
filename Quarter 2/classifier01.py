@@ -28,21 +28,21 @@ print(len(nonstudent))
 fig, ax = plt.subplots()
 labels = ['yes default', 'no default']
 #students and nonstudents
-# plt.title("students and non-students")
-# defaults = 0
-# nondefaults = 0
-# i = 0
-# while defaults < 100:
-#     if data[i][0] == True: #defaulted
-#         plt.scatter(data[i][2], data[i][3], color='red', marker="x", label="yes default")
-#         defaults +=1
-#     i+=1
-# i=0
-# while nondefaults < 100:
-#     if data[i][0] == False : # not defaulted
-#         plt.scatter(data[i][2], data[i][3], color='blue', facecolors='none', edgecolors='b', label="no default")
-#         nondefaults +=1
-#     i+=1
+plt.title("students and non-students")
+defaults = 0
+nondefaults = 0
+i = 0
+while defaults < 100:
+    if data[i][0] == True: #defaulted
+        plt.scatter(data[i][2], data[i][3], color='red', marker="x", label="yes default")
+        defaults +=1
+    i+=1
+i=0
+while nondefaults < 100:
+    if data[i][0] == False : # not defaulted
+        plt.scatter(data[i][2], data[i][3], color='blue', facecolors='none', edgecolors='b', label="no default")
+        nondefaults +=1
+    i+=1
 
 #students
 # plt.title("students only")
@@ -62,21 +62,22 @@ labels = ['yes default', 'no default']
 #     i+=1
 
 #nonstudents
-plt.title("non-students only")
-defaults = 0
-nondefaults = 0
-i = 0
-while defaults < 100:
-    if nonstudent[i][0] == True: #defaulted
-        ax.scatter(nonstudent[i][2], nonstudent[i][3], color='red', marker="x", label=labels[0])
-        defaults +=1
-    i+=1
-i=0
-while nondefaults < 100:
-    if nonstudent[i][0] == False : # not defaulted
-        ax.scatter(nonstudent[i][2], nonstudent[i][3], color='blue', facecolors='none', edgecolors='b', label=labels[1])
-        nondefaults +=1
-    i+=1
+# plt.title("non-students only")
+# defaults = 0
+# nondefaults = 0
+# i = 0
+# while defaults < 100:
+#     if nonstudent[i][0] == True: #defaulted
+#         ax.scatter(nonstudent[i][2], nonstudent[i][3], color='red', marker="x", label=labels[0])
+#         defaults +=1
+#     i+=1
+# i=0
+# while nondefaults < 100:
+#     if nonstudent[i][0] == False : # not defaulted
+#         ax.scatter(nonstudent[i][2], nonstudent[i][3], color='blue', facecolors='none', edgecolors='b', label=labels[1])
+#         nondefaults +=1
+#     i+=1
+
 handles, labels1 = ax.get_legend_handles_labels()
 
 # ax.legend(["yes default", "no default"])
@@ -85,3 +86,23 @@ ax.grid(True)
 plt.xlabel("balance")
 plt.ylabel("income")
 plt.show()
+
+#lab02
+numerator = 0
+denominator = 0
+xn = 0
+yn = 0
+count = 0
+for i in student:
+    xn += i[2]
+    count += 1
+xn = xn / count
+for i in student:
+    yn += i[3]
+yn = yn / count
+for i in range(0,len(student)):
+    numerator += (student[i][2]-xn)*(student[i][3]-yn)
+    denominator += (student[i][2]-xn)**2
+b1 = numerator/denominator
+b0 = yn - b1*xn
+print(b0, b1)
