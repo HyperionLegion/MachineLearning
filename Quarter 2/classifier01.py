@@ -22,10 +22,13 @@ with open( 'Default.csv' , newline='' ) as csvfile :
 random.shuffle(data)
 random.shuffle(student)
 random.shuffle(nonstudent)
+print(len(data))
+print(len(student))
+print(len(nonstudent))
 fig, ax = plt.subplots()
 labels = ['yes default', 'no default']
 #students and nonstudents
-#plt.title("students and non-students")
+# plt.title("students and non-students")
 # defaults = 0
 # nondefaults = 0
 # i = 0
@@ -42,7 +45,7 @@ labels = ['yes default', 'no default']
 #     i+=1
 
 #students
-#plt.title("students only")
+# plt.title("students only")
 # defaults = 0
 # nondefaults = 0
 # i = 0
@@ -74,8 +77,10 @@ while nondefaults < 100:
         ax.scatter(nonstudent[i][2], nonstudent[i][3], color='blue', facecolors='none', edgecolors='b', label=labels[1])
         nondefaults +=1
     i+=1
+handles, labels1 = ax.get_legend_handles_labels()
 
-#ax.legend(["yes default", "no default"])
+# ax.legend(["yes default", "no default"])
+ax.legend(handles=[handles[0],handles[-1]])
 ax.grid(True)
 plt.xlabel("balance")
 plt.ylabel("income")
