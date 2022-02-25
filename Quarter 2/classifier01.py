@@ -1,7 +1,9 @@
 import csv
 import math
 from matplotlib.axes import Axes
+import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits import mplot3d
 import random
 data = []
 student = []
@@ -26,7 +28,7 @@ random.shuffle(nonstudent)
 print(len(data))
 print(len(student))
 print(len(nonstudent))
-fig, ax = plt.subplots()
+# fig, ax = plt.subplots()
 labels = ['yes default', 'no default']
 #students and nonstudents
 # plt.title("students and non-students")
@@ -132,3 +134,30 @@ def formula(X, Y, b0, b1):
 
 err = formula(student_balances, student_defaults, b0, b1)
 print(err)
+
+#plot for lab2
+def errorFunc(student_balances, student_defaults, b0, b1):
+    b0 = b0.tolist()
+    b1 = b1.tolist()
+    errors = []
+    for a in range(len(b0)):
+        errorList = []
+        for b in range(len(b0[a])):
+            errorList.append(formula(student_balances, student_defaults, b0[a][b], b1[a][b]))
+        errors.append(errorList)
+    return np.array(errors)
+
+b0 = np.arange(-15.0, -5.0, 0.5)
+b1 = np.arange(0.001,.01,0.009/10)
+b0, b1 = np.meshgrid(b0, b1)
+#print(b0)
+#print(b0, b1)
+z = errorFunc(student_balances, student_defaults, b0, b1)
+# b0residStanError, b1residStanError = residualStandardError(b0, b1, tvData, salesData, xn) #resid stand error
+# print(b0residStanError)
+fig = plt.figure()
+ax = plt.axes(projection='3d')
+ax.plot_surface(b0, b1, z) #surface plot
+ax.set_zlim3d(-2000, -200)
+ax.scatter( -11.2259 , 0.005599, formula(student_balances, student_defaults, -11.2259, 0.005599) , color = '#ff0000' )
+plt.show()
