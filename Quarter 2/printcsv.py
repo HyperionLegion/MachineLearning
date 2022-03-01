@@ -138,8 +138,8 @@ z = errorFunc(b0, b1, tvData, salesData)
 # b0residStanError, b1residStanError = residualStandardError(b0, b1, tvData, salesData, xn) #resid stand error
 # print(b0residStanError)
 fig = plt.figure()
-ax = plt.axes(projection='3d')
-ax.plot_surface(b0, b1, z) #surface plot
+#ax = plt.axes(projection='3d')
+#ax.plot_surface(b0, b1, z) #surface plot
 
 lab03x = np.arange(min(tvData), max(tvData), 1)
 lab03x = lab03x.tolist()
@@ -148,8 +148,8 @@ for i in lab03x:
     lab03y.append(lab03(tvData, salesData, i, 5))
 #    plt.scatter(i, lab03(tvData, salesData, i, 5), color='#ff0000') #make this 2d
 #ax.view_init(60, 35) #view angle
-ax.scatter( 7.0325935491277 , 0.04753664, 2102.53 , color = '#ff0000' )
-#plt.contour( b0 , b1 , z )
+plt.scatter( 7.0325935491277 , 0.04753664, 2102.53 , color = '#ff0000' )
+plt.contour( b0 , b1 , z )
 plt.show()
 print( 'done' )
 

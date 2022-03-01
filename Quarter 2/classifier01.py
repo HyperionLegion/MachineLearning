@@ -157,7 +157,8 @@ z = errorFunc(student_balances, student_defaults, b0, b1)
 # print(b0residStanError)
 fig = plt.figure()
 ax = plt.axes(projection='3d')
-ax.plot_surface(b0, b1, z) #surface plot
-ax.set_zlim3d(-2000, -200)
+#plt.plot_surface(b0, b1, z) #surface plot
+#ax.set_zlim3d(-2000, -200)
 ax.scatter( -11.2259 , 0.005599, formula(student_balances, student_defaults, -11.2259, 0.005599) , color = '#ff0000' )
+plt.contour(b0, b1, z, [-300, -500, -700, -900, -1100, -1300, -1500, -1700, -1900][::-1])
 plt.show()
