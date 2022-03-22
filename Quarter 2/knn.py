@@ -22,20 +22,25 @@ with open( 'SocialNetworkAds.csv' , newline='' ) as csvfile :
         data_salary.append(float(row[1]))
         data_purchased.append(float(row[2]))
         
+# for i in range(len(data)):
+#     if data[i][2] == 0:
+#         plt.scatter(data[i][0], data[i][1], color='red', marker="x", label="yes default")
+#     else:
+#         plt.scatter(data[i][0], data[i][1], color='blue', facecolors='none', edgecolors='b', label="no default")
 def lab03(data, x, y, n):
     indexes = [k for k in range(0,n)]
     maxIndex = 0
     for i in indexes:
-        if (pow((data[i][0]-x), 2) + pow((data[i][1]-y), 2)) > (pow((data[maxIndex][0]-x), 2) + pow((data[maxIndex][1]-y), 2)):
+        if (pow((data[i][0]-x), 2) + pow((data[i][1]-y)/1000, 2)) > (pow((data[maxIndex][0]-x), 2) + pow((data[maxIndex][1]-y)/1000, 2)):
             maxIndex = i
     for i in range (0, len(data)):
         if i not in indexes:
-            if (pow((data[i][0]-x), 2) + pow((data[i][1]-y), 2)) < (pow((data[maxIndex][0]-x), 2) + pow((data[maxIndex][1]-y), 2)):
+            if (pow((data[i][0]-x), 2) + pow((data[i][1]-y)/1000, 2)) < (pow((data[maxIndex][0]-x), 2) + pow((data[maxIndex][1]-y)/1000, 2)):
                 indexes.remove(maxIndex)
                 indexes.append(i)
                 maxIndex = indexes[0]
                 for j in indexes:
-                    if (pow((data[j][0]-x), 2) + pow((data[j][1]-y), 2)) > (pow((data[maxIndex][0]-x), 2) + pow((data[maxIndex][1]-y), 2)):
+                    if (pow((data[j][0]-x), 2) + pow((data[j][1]-y)/1000, 2)) > (pow((data[maxIndex][0]-x), 2) + pow((data[maxIndex][1]-y)/1000, 2)):
                         maxIndex = j
     averagey = 0
     for i in indexes:
@@ -44,7 +49,7 @@ def lab03(data, x, y, n):
     return averagey
 
 lab03age = np.arange(min(data_age), max(data_age), 1)
-lab03salary = np.arange(min(data_salary), max(data_salary), 10000)
+lab03salary = np.arange(min(data_salary), max(data_salary), 2000)
 lab03age = lab03age.tolist()
 lab03salary = lab03salary.tolist()
 lab03purchase = []
@@ -53,9 +58,9 @@ for i in lab03age:
         print(i, j)
         p = lab03(data, i, j, 3)
         if p > 0.5:
-            plt.scatter(i, j, color='red', marker="x", label="yes default")
-        else:
             plt.scatter(i, j, color='blue', facecolors='none', edgecolors='b', label="no default")
+        else:
+            plt.scatter(i, j, color='red', marker="x", label="yes default")
 
         #lab03purchase.append(lab03(data, i, j, 5))
 plt.show()
