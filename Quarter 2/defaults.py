@@ -120,6 +120,12 @@ b0 = yn - b1*xn
 b0 = -11.2259
 b1 = 0.005599
 
+data_balances = []
+data_defaults = []
+for i in data:
+    data_balances.append(i[2])
+    data_defaults.append(i[0])
+
 student_balances = []
 student_defaults = []
 for i in student:
@@ -147,21 +153,21 @@ def errorFunc(student_balances, student_defaults, b0, b1):
         errors.append(errorList)
     return np.array(errors)
 
-b0 = np.arange(-15.0, -5.0, 0.5)
-b1 = np.arange(0.001,.01,0.009/10)
-b0, b1 = np.meshgrid(b0, b1)
-#print(b0)
-#print(b0, b1)
-z = errorFunc(student_balances, student_defaults, b0, b1)
-# b0residStanError, b1residStanError = residualStandardError(b0, b1, tvData, salesData, xn) #resid stand error
-# print(b0residStanError)
-fig = plt.figure()
-ax = plt.axes(projection='3d')
-#plt.plot_surface(b0, b1, z) #surface plot
-#ax.set_zlim3d(-2000, -200)
-ax.scatter( -11.2259 , 0.005599, formula(student_balances, student_defaults, -11.2259, 0.005599) , color = '#ff0000' )
-plt.contour(b0, b1, z, [-300, -500, -700, -900, -1100, -1300, -1500, -1700, -1900][::-1])
-plt.show()
+# b0 = np.arange(-15.0, -5.0, 0.5)
+# b1 = np.arange(0.001,.01,0.009/10)
+# b0, b1 = np.meshgrid(b0, b1)
+# #print(b0)
+# #print(b0, b1)
+# z = errorFunc(student_balances, student_defaults, b0, b1)
+# # b0residStanError, b1residStanError = residualStandardError(b0, b1, tvData, salesData, xn) #resid stand error
+# # print(b0residStanError)
+# fig = plt.figure()
+# ax = plt.axes(projection='3d')
+# #plt.plot_surface(b0, b1, z) #surface plot
+# #ax.set_zlim3d(-2000, -200)
+# ax.scatter( -11.2259 , 0.005599, formula(student_balances, student_defaults, -11.2259, 0.005599) , color = '#ff0000' )
+# plt.contour(b0, b1, z, [-300, -500, -700, -900, -1100, -1300, -1500, -1700, -1900][::-1])
+# plt.show()
 
 
 #p = 1/(1+e^-(b0+b1*x))
@@ -180,3 +186,32 @@ plt.show()
 #f = -log(1+e^(b0+b1*x))+y*(b0+b1*x)
 #df/d(b1) = Sum of x*(y-p) (x and y are iterable)
 #df/d(b0) = Sum of y-p (y is iterable)
+
+#using p, if p>0.5 but does not default then plot (false positive)
+#if p<0.5 but does default then plot (false negative)
+#59 false positives, 270 false negatives
+#c = 1.0 x 10^9
+b0 = -11.2259
+b1 = 0.005599
+
+#p = 1/(1+e^-(b0+b1*x))
+fp = 0
+fn = 0
+v= 0
+for i in range(0, len(data_balances)):
+    p = 0
+    v = -(b0+b1*data_balances[i])
+    if v > 10:
+        p = 0
+    elif v < -10:
+        p = 1
+    else:
+        p = 1/(1+math.exp(v))
+    if p > 0.5 and data_defaults[i] == False:
+        print("false positive")
+        fp += 1
+    elif p<0.5 and data_defaults[i] == True:
+        print("false negative")
+        fn += 1
+print(fn)
+print(fp)
