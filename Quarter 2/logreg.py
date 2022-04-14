@@ -46,11 +46,11 @@ plt.title("students and non-students false negatives")
 for i in range(0, len(data)):
     # print(logisticRegr.predict(X[i].reshape(1,-1)))
     # print(y[i])
-    # if logisticRegr.predict(X[i].reshape(1,-1)) == [True] and y[i] == [[False]]:
-    #     if data[i][1]:
-    #         plt.scatter(data[i][2], data[i][3], color='red', marker="x", label="yes default")
-    #     else:    
-    #         plt.scatter(data[i][2], data[i][3], color='blue', facecolors='none', edgecolors='b', label="no default")
+    if logisticRegr.predict(X[i].reshape(1,-1)) == [True] and y[i] == [[False]]:
+        if data[i][1]:
+            plt.scatter(data[i][2], data[i][3], color='red', marker="x", label="yes default")
+        else:    
+            plt.scatter(data[i][2], data[i][3], color='blue', facecolors='none', edgecolors='b', label="no default")
 
     if logisticRegr.predict(X[i].reshape(1,-1)) == [False] and y[i] == [[True]]:
         if data[i][1]:
